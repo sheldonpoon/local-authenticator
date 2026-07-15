@@ -3,13 +3,16 @@ from tkinter import messagebox, simpledialog
 import pyotp
 import json
 import os
+import sys
 import pyperclip
 
-# --- PATH FIX STARTS HERE ---
-# This ensures the file is ALWAYS saved in the same folder as the script
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Keep the editable data file beside the executable when packaged, or beside
+# this script when running from source.
+if getattr(sys, "frozen", False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, "otp_secrets.json")
-# ----------------------------
 
 class AuthenticatorApp:
     def __init__(self, root):
@@ -73,8 +76,9 @@ class AuthenticatorApp:
     def add_account(self):
         name = simpledialog.askstring("Account Name", "Enter a name (e.g., GitHub):")
         if not name: return
-        secret = simpledialog.askstring("Secret Key", "Enter the Base32 Secret Key:").replace(" ", "").upper()
+        secret = simpledialog.askstring("Secret Key", "Enter the Base32 Secret Key:")
         if not secret: return
+        secret = secret.replace(" ", "").upper()
 
         try:
             pyotp.TOTP(secret).now() # Test if it works
