@@ -1,4 +1,7 @@
-
-otp_secrets.json
-
 .venv/
+build/
+dist/
+*.spec
+__pycache__/
+*.py
+otp_secrets.json
